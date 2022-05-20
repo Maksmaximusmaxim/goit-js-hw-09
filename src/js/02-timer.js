@@ -39,6 +39,7 @@ function timeValue(){
 }
 
 startBtn.addEventListener('click', () => {
+  startBtn.disabled= true;
   if (timerId) {
       return;
   }
@@ -87,15 +88,3 @@ function addLeadingZero(value){
 }
 
 
-// function getTimerValues() {
-//   
-//   
-//  
-//   console.log('time', time);
-//   if (resultTime > 0) {
-//       updateClockFace(time);
-//   }
-//   if (resultTime < 1000) {
-//       clearInterval(timerId);
-//   }
-// }
