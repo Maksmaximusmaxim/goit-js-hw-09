@@ -1,49 +1,40 @@
-
-const form = document.querySelector(`.form`);
-console.log(form)
-
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+const formEl = document.querySelector('.form');
+formEl.addEventListener('submit', onsubmit);
 function createPromise(position, delay) {
   return new Promise((resolve, reject) => {
-  const shouldResolve = Math.random() > 0.3;
- setTimeout(()=>{
-    if (shouldResolve) {
-    resolve({position, delay});
-  } else {
-    reject({position, delay});
-  }
- } , delay);
-});
-};
-
-form.addEventListener(`submit`, (e)=>{
-e.preventDefault();
-const delay = form.delay.value;
-const step       =  form.step.value;
-const amount     = form.amount.value;
-let numDelay = delay;
-if (numDelay <= 0) {
-  return;
-}
-for (let i = 0; i < amount; i += 1) {
-  let numPosition = i + 1;
-  createPromise(numPosition, numDelay)
-
-  .then(({ position, delay }) => {
-    console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-  })
-  .catch(({ position, delay }) => {
-    console.log(`❌ Rejected promise ${position} in ${delay}ms`);
+    const shouldResolve = Math.random() > 0.3;
+    setTimeout(() => {
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay);
   });
-  numDelay += step;
 }
-
-
-
-})
-
-
-
-
-
-
-
+function onsubmit(e) {
+  e.preventDefault();
+  const firstDelay = Number(formEl.delay.value);
+  const stepDelay = Number(formEl.step.value);
+  const amountPromises = Number(formEl.amount.value);
+  let numDelay = firstDelay;
+  if (numDelay <= 0) {
+    return;
+  }
+  for (let i = 0; i < amountPromises; i += 1) {
+    let numPosition = i + 1;
+    createPromise(numPosition, numDelay)
+      .then(({ position, delay }) => {
+        Notify.success(`:белая_галочка: Fulfilled promise ${position} in ${delay}ms`, {
+          clickToClose: true,
+        });
+      })
+      .catch(({ position, delay }) => {
+        Notify.failure(`:х: Rejected promise ${position} in ${delay}ms`, {
+          clickToClose: true,
+        });
+      });
+    numDelay += stepDelay;
+  }
+}
